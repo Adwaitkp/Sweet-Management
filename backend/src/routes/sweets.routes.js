@@ -26,6 +26,23 @@ router.post("/:id/purchase", (req, res) => {
   res.status(200).json({ message: "Purchased" });
 });
 
+// Search sweets by name, category, or price range
+router.get("/search", (req, res) => {
+  const { name, category, minPrice, maxPrice } = req.query;
+  const min = minPrice !== undefined ? Number(minPrice) : undefined;
+  const max = maxPrice !== undefined ? Number(maxPrice) : undefined;
+
+  const filtered = sweets.filter((s) => {
+    if (name && !String(s.name).toLowerCase().includes(String(name).toLowerCase())) return false;
+    if (category && String(s.category).toLowerCase() !== String(category).toLowerCase()) return false;
+    if (min !== undefined && Number(s.price) < min) return false;
+    if (max !== undefined && Number(s.price) > max) return false;
+    return true;
+  });
+
+  res.status(200).json(filtered);
+});
+
 // Update a sweet by id
 router.put("/:id", (req, res) => {
   const sweet = sweets.find(s => s.id == req.params.id);
