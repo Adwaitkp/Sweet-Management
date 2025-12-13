@@ -23,3 +23,29 @@ describe("Sweets API", () => {
     expect(res.body).toHaveProperty("name", "Ladoo");
   });
 });
+it("should decrease sweet quantity on purchase", async () => {
+  // create sweet
+  const createRes = await request(app)
+    .post("/api/sweets")
+    .send({
+      name: "Barfi",
+      category: "Indian",
+      price: 20,
+      quantity: 5
+    });
+
+  const sweetId = createRes.body.id;
+
+  // purchase sweet
+  const purchaseRes = await request(app)
+    .post(`/api/sweets/${sweetId}/purchase`);
+
+  expect(purchaseRes.statusCode).toBe(200);
+
+  // get sweets again
+    const listRes = await request(app).get("/api/sweets");
+    const updated = listRes.body.find(s => s.id === sweetId);
+    expect(updated).toBeTruthy();
+    expect(updated.quantity).toBe(4);
+});
+

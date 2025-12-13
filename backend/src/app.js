@@ -1,8 +1,7 @@
 const express = require("express");
 const authRoutes = require("./routes/auth.routes");
-require("dotenv").config();
 const sweetsRoutes = require("./routes/sweets.routes");
-
+require("dotenv").config();
 
 const app = express();
 
