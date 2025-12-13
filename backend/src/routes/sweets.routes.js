@@ -1,4 +1,5 @@
 const express = require("express");
+const { adminOnly, verifyJWT } = require("../middleware/auth");
 const router = express.Router();
 
 let sweets = [];
@@ -27,7 +28,8 @@ router.post("/:id/purchase", (req, res) => {
 });
 
 // Restock a sweet (Admin only)
-router.post("/:id/restock", (req, res) => {
+// Protect restock: require admin via header (tests) or JWT role
+router.post("/:id/restock", adminOnly, (req, res) => {
   const role = req.header("x-role");
   if (String(role || "").toLowerCase() !== "admin") {
     return res.status(403).json({ message: "Forbidden" });
