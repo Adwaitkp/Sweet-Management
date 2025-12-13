@@ -2,6 +2,7 @@ const express = require("express");
 const authRoutes = require("./routes/auth.routes");
 const sweetsRoutes = require("./routes/sweets.routes");
 require("dotenv").config();
+const cors = require("cors");
 
 const app = express();
 
@@ -11,7 +12,18 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 app.use(express.json());
+
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/sweets", sweetsRoutes);
+
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 module.exports = app;

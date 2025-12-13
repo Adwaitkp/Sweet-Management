@@ -18,7 +18,7 @@ export default function App() {
     return showRegister ? (
       <Register onRegister={refreshAuth} />
     ) : (
-      <Login onLogin={refreshAuth} />
+      <Login onLogin={refreshAuth} onShowRegister={() => setShowRegister(true)} />
     );
   }
 

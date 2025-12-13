@@ -3,14 +3,53 @@ import api from "../api/axios";
 
 export default function Sweets({ onLogout }) {
   const [sweets, setSweets] = useState([]);
+  const [search, setSearch] = useState("");
+
+  // Admin form states
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState("");
+  const [quantity, setQuantity] = useState("");
+
+  // Demo admin true
+  const isAdmin = true;
 
   const loadSweets = async () => {
     const res = await api.get("/sweets");
     setSweets(res.data);
   };
 
+  const searchSweets = async () => {
+    const res = await api.get(`/sweets/search?name=${search}`);
+    setSweets(res.data);
+  };
+
   const purchase = async (id) => {
     await api.post(`/sweets/${id}/purchase`);
+    loadSweets();
+  };
+
+  const deleteSweet = async (id) => {
+    await api.delete(`/sweets/${id}`);
+    loadSweets();
+  };
+
+  const restockSweet = async (id) => {
+    await api.post(`/sweets/${id}/restock`, { quantity: 10 });
+    loadSweets();
+  };
+
+  const addSweet = async () => {
+    await api.post("/sweets", {
+      name,
+      category,
+      price: Number(price),
+      quantity: Number(quantity),
+    });
+    setName("");
+    setCategory("");
+    setPrice("");
+    setQuantity("");
     loadSweets();
   };
 
@@ -20,18 +59,57 @@ export default function Sweets({ onLogout }) {
 
   return (
     <div className="p-6">
-      <button className="mb-4 bg-red-600 text-white px-3 py-1" onClick={onLogout}>
-        Logout
-      </button>
+      <div className="flex justify-between mb-4">
+        <h1 className="text-2xl font-bold">Sweet Shop</h1>
+        <button
+          className="bg-red-600 text-white px-3 py-1"
+          onClick={onLogout}
+        >
+          Logout
+        </button>
+      </div>
 
-      <h1 className="text-2xl font-bold mb-4">Sweets</h1>
+      {/* SEARCH */}
+      <div className="mb-4 flex gap-2">
+        <input
+          className="border p-2 flex-1"
+          placeholder="Search sweet by name"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <button
+          className="bg-green-600 text-white px-4"
+          onClick={searchSweets}
+        >
+          Search
+        </button>
+      </div>
 
+      {/* ADMIN ADD SWEET */}
+      {isAdmin && (
+        <div className="border p-4 mb-6">
+          <h2 className="font-bold mb-2">Add Sweet (Admin)</h2>
+          <div className="grid grid-cols-4 gap-2">
+            <input className="border p-2" placeholder="Name" value={name} onChange={e => setName(e.target.value)} />
+            <input className="border p-2" placeholder="Category" value={category} onChange={e => setCategory(e.target.value)} />
+            <input className="border p-2" placeholder="Price" value={price} onChange={e => setPrice(e.target.value)} />
+            <input className="border p-2" placeholder="Qty" value={quantity} onChange={e => setQuantity(e.target.value)} />
+          </div>
+          <button className="bg-blue-600 text-white px-4 py-1 mt-2" onClick={addSweet}>
+            Add Sweet
+          </button>
+        </div>
+      )}
+
+      {/* SWEETS LIST */}
       <div className="grid grid-cols-3 gap-4">
-        {sweets.map(s => (
+        {sweets.map((s) => (
           <div key={s.id} className="border p-3">
             <h2 className="font-bold">{s.name}</h2>
-            <p>₹{s.price}</p>
+            <p>Category: {s.category}</p>
+            <p>Price: ₹{s.price}</p>
             <p>Qty: {s.quantity}</p>
+
             <button
               disabled={s.quantity === 0}
               className="bg-blue-600 text-white px-2 py-1 mt-2 disabled:bg-gray-400"
@@ -39,6 +117,23 @@ export default function Sweets({ onLogout }) {
             >
               Purchase
             </button>
+
+            {isAdmin && (
+              <div className="flex gap-2 mt-2">
+                <button
+                  className="bg-purple-600 text-white px-2 py-1"
+                  onClick={() => restockSweet(s.id)}
+                >
+                  Restock
+                </button>
+                <button
+                  className="bg-red-600 text-white px-2 py-1"
+                  onClick={() => deleteSweet(s.id)}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </div>
