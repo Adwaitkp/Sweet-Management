@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../app");
+const app = require("../server");
 
 describe("Sweets API", () => {
   it("should return list of sweets", async () => {

@@ -4,7 +4,7 @@ jest.mock("../models/User", () => ({
 }));
 
 const request = require("supertest");
-const app = require("../app");
+const app = require("../server");
 const User = require("../models/User");
 
 describe("Auth API - Register", () => {
