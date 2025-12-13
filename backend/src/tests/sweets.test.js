@@ -47,5 +47,58 @@ it("should decrease sweet quantity on purchase", async () => {
     const updated = listRes.body.find(s => s.id === sweetId);
     expect(updated).toBeTruthy();
     expect(updated.quantity).toBe(4);
-});
+  });
+
+  it("should update a sweet", async () => {
+    // create
+    const createRes = await request(app)
+      .post("/api/sweets")
+      .send({
+        name: "Jalebi",
+        category: "Indian",
+        price: 15,
+        quantity: 25
+      });
+    const sweetId = createRes.body.id;
+
+    // update
+    const updateRes = await request(app)
+      .put(`/api/sweets/${sweetId}`)
+      .send({
+        price: 30,
+        quantity: 40,
+        name: "Jalebi Special"
+      });
+
+    expect(updateRes.statusCode).toBe(200);
+    expect(updateRes.body).toMatchObject({
+      id: sweetId,
+      name: "Jalebi Special",
+      price: 30,
+      quantity: 40
+    });
+  });
+
+  it("should delete a sweet", async () => {
+    // create
+    const createRes = await request(app)
+      .post("/api/sweets")
+      .send({
+        name: "Rasgulla",
+        category: "Indian",
+        price: 12,
+        quantity: 10
+      });
+    const sweetId = createRes.body.id;
+
+    // delete
+    const delRes = await request(app).delete(`/api/sweets/${sweetId}`);
+    expect(delRes.statusCode).toBe(200);
+
+    // verify
+    const listRes = await request(app).get("/api/sweets");
+    const found = listRes.body.find(s => s.id === sweetId);
+    expect(found).toBeUndefined();
+  });
+
 
