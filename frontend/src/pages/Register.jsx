@@ -1,12 +1,13 @@
 import { useState } from "react";
 import api from "../api/axios";
 
-export default function Register({ onRegister }) {
+export default function Register({ onRegister, onShowLogin }) {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
 
   const register = async () => {
     const res = await api.post("/auth/register", form);
     localStorage.setItem("token", res.data.token);
+    localStorage.setItem("role", res.data.role);
     onRegister();
   };
 
@@ -20,6 +21,12 @@ export default function Register({ onRegister }) {
         <button className="bg-green-600 text-white w-full p-2" onClick={register}>
           Register
         </button>
+        <p className="text-sm text-center">
+          Already have an account?{" "}
+          <button className="text-blue-600 underline" onClick={onShowLogin}>
+            Login
+          </button>
+        </p>
       </div>
     </div>
   );

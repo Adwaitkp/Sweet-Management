@@ -8,7 +8,9 @@ const app = express();
 
 if (process.env.NODE_ENV !== "test") {
   const connectDB = require("./config/db");
-  connectDB();
+  const seedAdmin = require("./config/seedAdmin");
+  
+  connectDB().then(() => seedAdmin());
 }
 
 app.use(express.json());

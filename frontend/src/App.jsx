@@ -11,12 +11,13 @@ export default function App() {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
     setToken(null);
   };
 
   if (!token) {
     return showRegister ? (
-      <Register onRegister={refreshAuth} />
+      <Register onRegister={refreshAuth} onShowLogin={() => setShowRegister(false)} />
     ) : (
       <Login onLogin={refreshAuth} onShowRegister={() => setShowRegister(true)} />
     );

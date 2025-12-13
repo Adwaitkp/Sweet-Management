@@ -11,8 +11,15 @@ export default function Sweets({ onLogout }) {
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
 
-  // Demo admin true
-  const isAdmin = true;
+  // Edit modal state
+  const [editingSweet, setEditingSweet] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editPrice, setEditPrice] = useState("");
+  const [editQuantity, setEditQuantity] = useState("");
+
+  // Check if user is admin from localStorage
+  const isAdmin = localStorage.getItem("role") === "admin";
 
   const loadSweets = async () => {
     const res = await api.get("/sweets");
@@ -35,7 +42,26 @@ export default function Sweets({ onLogout }) {
   };
 
   const restockSweet = async (id) => {
-    await api.post(`/sweets/${id}/restock`, { quantity: 10 });
+    await api.post(`/sweets/${id}/restock`, { amount: 10 });
+    loadSweets();
+  };
+
+  const openEditModal = (sweet) => {
+    setEditingSweet(sweet);
+    setEditName(sweet.name);
+    setEditCategory(sweet.category);
+    setEditPrice(sweet.price);
+    setEditQuantity(sweet.quantity);
+  };
+
+  const updateSweet = async () => {
+    await api.put(`/sweets/${editingSweet.id}`, {
+      name: editName,
+      category: editCategory,
+      price: Number(editPrice),
+      quantity: Number(editQuantity),
+    });
+    setEditingSweet(null);
     loadSweets();
   };
 
@@ -121,6 +147,12 @@ export default function Sweets({ onLogout }) {
             {isAdmin && (
               <div className="flex gap-2 mt-2">
                 <button
+                  className="bg-yellow-600 text-white px-2 py-1"
+                  onClick={() => openEditModal(s)}
+                >
+                  Edit
+                </button>
+                <button
                   className="bg-purple-600 text-white px-2 py-1"
                   onClick={() => restockSweet(s.id)}
                 >
@@ -137,6 +169,29 @@ export default function Sweets({ onLogout }) {
           </div>
         ))}
       </div>
+
+      {/* EDIT MODAL */}
+      {editingSweet && (
+        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 w-96">
+            <h2 className="font-bold mb-4">Edit Sweet</h2>
+            <div className="space-y-2">
+              <input className="border p-2 w-full" placeholder="Name" value={editName} onChange={e => setEditName(e.target.value)} />
+              <input className="border p-2 w-full" placeholder="Category" value={editCategory} onChange={e => setEditCategory(e.target.value)} />
+              <input className="border p-2 w-full" placeholder="Price" value={editPrice} onChange={e => setEditPrice(e.target.value)} />
+              <input className="border p-2 w-full" placeholder="Quantity" value={editQuantity} onChange={e => setEditQuantity(e.target.value)} />
+            </div>
+            <div className="flex gap-2 mt-4">
+              <button className="bg-blue-600 text-white px-4 py-2" onClick={updateSweet}>
+                Save
+              </button>
+              <button className="bg-gray-400 text-white px-4 py-2" onClick={() => setEditingSweet(null)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
