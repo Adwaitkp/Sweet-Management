@@ -4,19 +4,22 @@ const router = express.Router();
 
 let sweets = [];
 
-router.get("/", (req, res) => {
+// Get all sweets (Protected)
+router.get("/", verifyJWT, (req, res) => {
   res.status(200).json(sweets);
 });
 
 let idCounter = 1;
 
-router.post("/", (req, res) => {
+// Add a new sweet (Protected)
+router.post("/", verifyJWT, (req, res) => {
   const sweet = { id: idCounter++, ...req.body };
   sweets.push(sweet);
   res.status(201).json(sweet);
 });
 
-router.post("/:id/purchase", (req, res) => {
+// Purchase a sweet (Protected)
+router.post("/:id/purchase", verifyJWT, (req, res) => {
   const sweet = sweets.find(s => s.id == req.params.id);
 
   if (!sweet || sweet.quantity <= 0) {
@@ -28,13 +31,7 @@ router.post("/:id/purchase", (req, res) => {
 });
 
 // Restock a sweet (Admin only)
-// Protect restock: require admin via header (tests) or JWT role
-router.post("/:id/restock", adminOnly, (req, res) => {
-  const role = req.header("x-role");
-  if (String(role || "").toLowerCase() !== "admin") {
-    return res.status(403).json({ message: "Forbidden" });
-  }
-
+router.post("/:id/restock", verifyJWT, adminOnly, (req, res) => {
   const sweet = sweets.find(s => s.id == req.params.id);
   if (!sweet) {
     return res.status(404).json({ message: "Not found" });
@@ -49,8 +46,8 @@ router.post("/:id/restock", adminOnly, (req, res) => {
   res.status(200).json({ message: "Restocked", quantity: sweet.quantity });
 });
 
-// Search sweets by name, category, or price range
-router.get("/search", (req, res) => {
+// Search sweets by name, category, or price range (Protected)
+router.get("/search", verifyJWT, (req, res) => {
   const { name, category, minPrice, maxPrice } = req.query;
   const min = minPrice !== undefined ? Number(minPrice) : undefined;
   const max = maxPrice !== undefined ? Number(maxPrice) : undefined;
@@ -66,8 +63,8 @@ router.get("/search", (req, res) => {
   res.status(200).json(filtered);
 });
 
-// Update a sweet by id
-router.put("/:id", (req, res) => {
+// Update a sweet by id (Protected)
+router.put("/:id", verifyJWT, (req, res) => {
   const sweet = sweets.find(s => s.id == req.params.id);
   if (!sweet) {
     return res.status(404).json({ message: "Not found" });
@@ -80,8 +77,8 @@ router.put("/:id", (req, res) => {
   res.status(200).json(sweet);
 });
 
-// Delete a sweet by id
-router.delete("/:id", (req, res) => {
+// Delete a sweet by id (Admin only)
+router.delete("/:id", verifyJWT, adminOnly, (req, res) => {
   const idx = sweets.findIndex(s => s.id == req.params.id);
   if (idx === -1) {
     return res.status(404).json({ message: "Not found" });

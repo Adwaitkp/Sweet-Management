@@ -4,6 +4,9 @@ import api from "../api/axios";
 export default function Sweets({ onLogout }) {
   const [sweets, setSweets] = useState([]);
   const [search, setSearch] = useState("");
+  const [filterCategory, setFilterCategory] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
   // Admin form states
   const [name, setName] = useState("");
@@ -27,7 +30,12 @@ export default function Sweets({ onLogout }) {
   };
 
   const searchSweets = async () => {
-    const res = await api.get(`/sweets/search?name=${search}`);
+    const params = new URLSearchParams();
+    if (search) params.append("name", search);
+    if (filterCategory) params.append("category", filterCategory);
+    if (minPrice) params.append("minPrice", minPrice);
+    if (maxPrice) params.append("maxPrice", maxPrice);
+    const res = await api.get(`/sweets/search?${params.toString()}`);
     setSweets(res.data);
   };
 
@@ -96,18 +104,44 @@ export default function Sweets({ onLogout }) {
       </div>
 
       {/* SEARCH */}
-      <div className="mb-4 flex gap-2">
+      <div className="mb-4 flex gap-2 flex-wrap">
         <input
           className="border p-2 flex-1"
-          placeholder="Search sweet by name"
+          placeholder="Search by name"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+        />
+        <input
+          className="border p-2 w-32"
+          placeholder="Category"
+          value={filterCategory}
+          onChange={(e) => setFilterCategory(e.target.value)}
+        />
+        <input
+          className="border p-2 w-24"
+          placeholder="Min ₹"
+          type="number"
+          value={minPrice}
+          onChange={(e) => setMinPrice(e.target.value)}
+        />
+        <input
+          className="border p-2 w-24"
+          placeholder="Max ₹"
+          type="number"
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(e.target.value)}
         />
         <button
           className="bg-green-600 text-white px-4"
           onClick={searchSweets}
         >
           Search
+        </button>
+        <button
+          className="bg-gray-400 text-white px-4"
+          onClick={() => { setSearch(""); setFilterCategory(""); setMinPrice(""); setMaxPrice(""); loadSweets(); }}
+        >
+          Clear
         </button>
       </div>
 
