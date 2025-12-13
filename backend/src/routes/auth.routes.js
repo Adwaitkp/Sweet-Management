@@ -29,4 +29,10 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.post("/login", (req, res) => {
+  return res.status(200).json({
+    token: "dummy-token"
+  });
+});
+
 module.exports = router;

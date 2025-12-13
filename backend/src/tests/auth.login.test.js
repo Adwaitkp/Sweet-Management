@@ -1,28 +1,30 @@
 jest.mock("../models/User", () => ({
-  create: jest.fn(),
   findOne: jest.fn()
 }));
 
 const request = require("supertest");
 const app = require("../app");
+const bcrypt = require("bcrypt");
 const User = require("../models/User");
 
-describe("Auth API - Register", () => {
-  it("should register a user and return 201 with token", async () => {
-    User.create.mockResolvedValue({
+describe("Auth API - Login", () => {
+  it("should login user and return token", async () => {
+    const passwordHash = await bcrypt.hash("password123", 10);
+    User.findOne.mockResolvedValue({
       _id: "123",
-      email: "adwait@test.com"
+      email: "adwait@test.com",
+      password: passwordHash,
+      passwordHash
     });
 
     const res = await request(app)
-      .post("/api/auth/register")
+      .post("/api/auth/login")
       .send({
-        name: "Adwait",
         email: "adwait@test.com",
         password: "password123"
       });
 
-    expect(res.statusCode).toBe(201);
+    expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("token");
   });
 });
