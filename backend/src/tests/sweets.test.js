@@ -100,6 +100,33 @@ describe("Sweets API", () => {
     expect(found).toBeUndefined();
   });
 
+  it("should restock a sweet (admin only)", async () => {
+    // create
+    const createRes = await request(app)
+      .post("/api/sweets")
+      .send({ name: "Sandesh", category: "Indian", price: 18, quantity: 2 });
+    const sweetId = createRes.body.id;
+
+    // non-admin forbidden
+    const forbidden = await request(app)
+      .post(`/api/sweets/${sweetId}/restock`)
+      .send({ amount: 5 });
+    expect(forbidden.statusCode).toBe(403);
+
+    // admin restock
+    const restockRes = await request(app)
+      .post(`/api/sweets/${sweetId}/restock`)
+      .set("x-role", "admin")
+      .send({ amount: 5 });
+    expect(restockRes.statusCode).toBe(200);
+    expect(restockRes.body).toMatchObject({ message: "Restocked", quantity: 7 });
+
+    // verify
+    const listRes = await request(app).get("/api/sweets");
+    const sweet = listRes.body.find(s => s.id === sweetId);
+    expect(sweet.quantity).toBe(7);
+  });
+
   it("should search sweets by name/category/price range", async () => {
     // seed sweets
     await request(app).post("/api/sweets").send({ name: "Kaju Katli", category: "Indian", price: 50, quantity: 10 });

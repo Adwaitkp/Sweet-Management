@@ -26,6 +26,27 @@ router.post("/:id/purchase", (req, res) => {
   res.status(200).json({ message: "Purchased" });
 });
 
+// Restock a sweet (Admin only)
+router.post("/:id/restock", (req, res) => {
+  const role = req.header("x-role");
+  if (String(role || "").toLowerCase() !== "admin") {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+
+  const sweet = sweets.find(s => s.id == req.params.id);
+  if (!sweet) {
+    return res.status(404).json({ message: "Not found" });
+  }
+
+  const amount = Number((req.body && req.body.amount) ?? 0);
+  if (!Number.isFinite(amount) || amount <= 0) {
+    return res.status(400).json({ message: "Invalid restock amount" });
+  }
+
+  sweet.quantity += amount;
+  res.status(200).json({ message: "Restocked", quantity: sweet.quantity });
+});
+
 // Search sweets by name, category, or price range
 router.get("/search", (req, res) => {
   const { name, category, minPrice, maxPrice } = req.query;
