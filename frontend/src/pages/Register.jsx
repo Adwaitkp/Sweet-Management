@@ -25,7 +25,7 @@ export default function Register({ onRegister, onShowLogin }) {
     <div className="min-h-screen bg-linear-to-br from-pink-100 via-purple-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <span className="text-5xl">🍬</span>
+          <span className="text-5xl"></span>
           <h1 className="text-2xl font-bold text-gray-800 mt-4">Create Account</h1>
           <p className="text-gray-500 mt-1">Join Sweet Shop today</p>
         </div>
