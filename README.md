@@ -1,5 +1,5 @@
 # Sweet Management
-
+Live link - https://sweet-management.onrender.com/
 A full‑stack sweets inventory and user management app built with a Node.js/Express backend and a React (Vite) frontend. It supports authentication, CRUD operations for sweets, and a clean, reusable UI.
 
 ## Features
