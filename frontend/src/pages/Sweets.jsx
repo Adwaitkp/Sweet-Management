@@ -59,7 +59,7 @@ export default function Sweets({ onLogout }) {
   };
 
   const updateSweet = async () => {
-    await api.put(`/sweets/${editingSweet.id}`, {
+    await api.put(`/sweets/${editingSweet._id}`, {
       name: editName,
       category: editCategory,
       price: Number(editPrice),
@@ -106,7 +106,7 @@ export default function Sweets({ onLogout }) {
           </div>
         ) : (
           sweets.map((s) => (
-            <div key={s.id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition">
+            <div key={s._id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition">
               <div className="bg-linear-to-r from-pink-400 to-purple-500 h-32 flex items-center justify-center">
                 <svg className="w-20 h-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="12" cy="12" r="3" stroke="white" strokeWidth="1.5"></circle>
@@ -144,7 +144,7 @@ export default function Sweets({ onLogout }) {
                   <button
                     disabled={s.quantity === 0}
                     className="w-full mt-4 bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-2 rounded-lg font-medium transition disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed"
-                    onClick={() => purchase(s.id)}
+                    onClick={() => purchase(s._id)}
                   >
                     {s.quantity === 0 ? 'Out of Stock' : 'Purchase'}
                   </button>
@@ -160,13 +160,13 @@ export default function Sweets({ onLogout }) {
                     </button>
                     <button
                       className="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 py-2 rounded-lg font-medium transition text-sm"
-                      onClick={() => restockSweet(s.id)}
+                      onClick={() => restockSweet(s._id)}
                     >
                       +10 Stock
                     </button>
                     <button
                       className="flex-1 bg-red-100 hover:bg-red-200 text-red-700 py-2 rounded-lg font-medium transition text-sm"
-                      onClick={() => deleteSweet(s.id)}
+                      onClick={() => deleteSweet(s._id)}
                     >
                       Delete
                     </button>
@@ -183,7 +183,7 @@ export default function Sweets({ onLogout }) {
       {editingSweet && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">✏️ Edit Sweet</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-4"> Edit Sweet</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
