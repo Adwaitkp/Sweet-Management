@@ -15,8 +15,9 @@ if (process.env.NODE_ENV !== "test") {
 
 app.use(express.json());
 
+// Allow deployed frontend or local dev
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  origin: "https://sweet-management.onrender.com",
   credentials: true,
 }));
 
