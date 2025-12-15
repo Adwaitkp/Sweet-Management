@@ -123,4 +123,11 @@ frontend/
 - Used GitHub Copilot to clean up the UI and build reusable components.
 - Used AI to speed up development and manage time effectively, helping build the project faster and within the time limit.
 - The AI used: ChatGPT and GitHub Copilot.
+<img width="1920" height="1080" alt="Screenshot (766)" src="https://github.com/user-attachments/assets/6045ee85-8fa7-4698-a33a-e9e6a2482310" />
+<img width="1920" height="1080" alt="Screenshot (763)" src="https://github.com/user-attachments/assets/6fc02e49-6574-4a9a-ba9a-45a8213a924a" />
+<img width="1920" height="1080" alt="Screenshot (764)" src="https://github.com/user-attachments/assets/f5ad421f-1b59-4f29-aa00-e1a77c61cea6" />
+<img width="1920" height="1080" alt="Screenshot (768)" src="https://github.com/user-attachments/assets/4b3d16d6-4ac6-4dfc-bcff-096c28f04c15" />
+<img width="1920" height="1080" alt="Screenshot (765)" src="https://github.com/user-attachments/assets/4913c41b-7b20-45d4-b43a-845978f70a96" />
+<img width="1920" height="1080" alt="Screenshot (769)" src="https://github.com/user-attachments/assets/d3144d38-4252-4f22-bd92-54123fba6e10" />
+
 
